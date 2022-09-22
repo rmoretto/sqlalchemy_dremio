@@ -17,8 +17,7 @@ FULL_ROWS = """[(1, 81297389127389213, Decimal('9112.229'), 9192.921875, 9292.17
 
 @pytest.fixture(scope='session')
 def engine():
-    conftest.get_engine()
-    return engine
+    return conftest.get_engine()
 
 
 def test_connect_args():
@@ -26,6 +25,9 @@ def test_connect_args():
     Tests connect string
     """
     engine = conftest.get_engine()
+    if not engine:
+        raise RuntimeError("Error, engine isn't available")
+
     try:
         results = engine.execute('select version from sys.version').fetchone()
         assert results is not None
@@ -33,25 +35,25 @@ def test_connect_args():
         engine.dispose()
 
 
-def test_simple_sql():
-    result = conftest.get_engine().execute('show databases')
+def test_simple_sql(engine):
+    result = engine.execute('show databases')
     rows = [row for row in result]
     assert len(rows) >= 0, 'show database results'
 
 
 def test_row_count(engine):
-    rows = conftest.get_engine().execute('SELECT * FROM $scratch.sqlalchemy_tests').fetchall()
+    rows = engine.execute('SELECT * FROM $scratch.sqlalchemy_tests').fetchall()
     assert len(rows) is 2
 
-def test_has_table_True():
-    assert conftest.get_engine().has_table("version", schema = "sys")
+def test_has_table_True(engine):
+    assert engine.has_table("version", schema = "sys")
 
-def test_has_table_True2():
-    assert conftest.get_engine().has_table("version")
+def test_has_table_True2(engine):
+    assert engine.has_table("version")
 
-def test_has_table_False():
-    assert not conftest.get_engine().has_table("does_not_exist", schema = "sys")
+def test_has_table_False(engine):
+    assert not engine.has_table("does_not_exist", schema = "sys")
 
-def test_has_table_False2():
-    assert not conftest.get_engine().has_table("does_not_exist")
+def test_has_table_False2(engine):
+    assert not engine.has_table("does_not_exist")
 
