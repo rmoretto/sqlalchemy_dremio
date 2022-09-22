@@ -146,7 +146,7 @@ class DremioExecutionContext_flight(DremioExecutionContext):
 
 class DremioDialect_flight(default.DefaultDialect):
 
-    name = 'dremio+flight'
+    name = 'dremio'
     supports_sane_rowcount = False
     supports_sane_multi_rowcount = False
     poolclass = pool.SingletonThreadPool
