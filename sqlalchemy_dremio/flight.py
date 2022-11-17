@@ -221,6 +221,9 @@ class DremioDialect_flight(default.DefaultDialect):
         schema_names = [r[0] for r in result]
         return schema_names
 
+    def get_view_names(self, connection, schema=None, **kwargs):
+        return []
+
     @reflection.cache
     def has_table(self, connection, table_name, schema=None, **kw):
         sql = 'SELECT COUNT(*) FROM INFORMATION_SCHEMA."TABLES"'
